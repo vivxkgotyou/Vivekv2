@@ -8,7 +8,8 @@ import sys
 def install_requirements():
     required_packages = {
         "flask": "flask",
-        "telegram": "python-telegram-bot"
+        "telegram": "python-telegram-bot",
+        "requests": "requests"
     }
     for module_name, package_name in required_packages.items():
         try:
@@ -24,6 +25,7 @@ import json
 import random
 import time
 import threading
+import requests
 from flask import Flask
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
@@ -64,15 +66,15 @@ RAID_TEXTS = [
     "Teri ma ko चोदू  ghachar ghachar 😂⚡️😂⚡️😂⚡️😂⚡️😎😎👌👌🏼🙏🏼🤣🗿🙏🏼🤣🗿🙏🏼🗿🗿",
     "𝙏𝙚𝙧𝙞 𝙢𝙖𝙖 𝙠𝙚 𝙗𝙝𝙤𝙨𝙙𝙚 𝙢𝙚 𝙡𝙖𝙩 𝙥𝙙𝙚𝙣𝙜𝙚 𝙗𝙝𝙤𝙩 𝙩𝙚𝙯 👻 😂👯😂👯😂👯 😂👯😂👯😂👯 😂👯😂👯😂👯",
     "🩴Le teri ma ke bhosde m chappal fasadi ab nikalke dikha😹💪🏿",
-    "Sᴜɴ ᵃᵍᵃʳ ᴛᴇʀɪ माँ ᴄʜᴏᴅᴜ ᴛᴏ कोई ʀᴏᴋʟᴇɢᴀ क्या mujhe ? 🤔🔥",     
+    "Sᴜɴ ᵃᵍᵃʳ ᴛᴇʀɪ माँ ᴄʜᴏᴅᴜ ᴛᴏ कोई ʀᴏᴋʟᴇɢᴀ کیا mujhe ? 🤔🔥",     
     "𝙉𝙀𝙆𝘼𝘼𝘼𝙇 𝙈𝘼𝘿𝘼𝘼𝙍𝘾𝙃𝘿👍🏼👍🏼👍🏼👍🏼👍🏼",
     "Cʜʟ🦧🔥 Tᴇʀɪ 🦧🔥Mᴀᴀ 🦧🔥Rɴᴅɪ 🔥🦧",
     "Tri bhn ki cht me tata ratan ayega neno lekr 🚙🔥🚙🔥🚙🔥",
     "Nepal 🇳🇵se lekar japan 🇯🇵 tak तेरी 𝙧𝙖𝙣𝙙𝙞 माँ 𝙠𝙚 𝙠𝙞𝙨𝙨𝙚𝙮 मशहूर है 😂🔥😂🔥",
     "𝘢𝘣𝘦 𝘩𝘢𝘵𝘵 सस्ती Rᴀɴᴅɪ ᴋᴀ काला 𝘉𝘢𝘤𝘤𝘩𝘢🤢",
-    "𝘿𝙐𝘽𝙄 𝘿𝙐𝘽𝙄 𝘿𝘼𝙋𝙋 𝘿𝘼𝙋𝙋 👶🏻 𝙏𝙀𝙍𝙄 𝘽𝙃𝙀𝙉 𝘾𝙊𝘿𝙀𝙉𝙂𝙀 𝙂𝘼𝙋𝙋 𝙂𝘼𝙋𝙋 🤤😂😹🔥",
+    "𝘿𝙐𝘽𝙄 𝘿𝙐𝘽𝙄 𝘿𝘼𝙋𝙋 𝘿𝘼𝙋𝙋 👶🏻 𝙏𝙀𝙍𝙄 𝘽𝙃𝙀𝙉 𝘾O𝘿𝙀𝙉𝙂𝙀 𝙂𝘼𝙋𝙋 𝙂𝘼𝙋𝙋 🤤😂😹🔥",
     "𝙏𝙀𝙍𝙄 𝙍𝘼𝙉𝘿𝙄  𝙈𝘼𝘼 𝙆𝙄 𝘾𝙃𝙊𝙊𝙏 𝘽𝘼𝙅𝘼𝙐🥁🔥🥁🔥🥁🔥🥁🔥",
-    "ᴜɴ ᵃᵍᵃʳ ᴛᴇʀɪ माँ ᴄʜᴏᴅᴜ ᴛᴏ कोई ʀᴏᴋʟᴇɢᴀ क्या mujhe ? 🤔🔥",
+    "ᴜɴ ᵃᵍᵃʳ ᴛᴇʀɪ माँ ᴄʜᴏᴅᴜ ᴛᴏ कोई ʀᴏᴋʟᴇɢᴀ کیا mujhe ? 🤔🔥",
     "teri maa chudte time roti h aur ghr Jake soti h😂🩷🔥😂🩷🔥😂🩷🔥🔥",
     "Kaan kholke sunn 👂🏻👂🏻👂🏻👂🏻👂🏻👂🏻 तेरी माँ महा रंडी है 😂😂😂🔥🔥🔥",
     "इधर 🤢 आ tujhe cp फ़ाइटर banau Langdi रंडीके 🤢 chuda😂🔥कमजोर pillla🎀",
@@ -221,6 +223,18 @@ def run_flask():
     app_flask.run(host="0.0.0.0", port=port)
 
 # ---------------------------
+# SELF-PING MECHANISM (NO UPTIMEROBOT NEEDED)
+# ---------------------------
+def self_ping():
+    app_url = os.environ.get("RENDER_EXTERNAL_URL", "http://127.0.0.1:8080")
+    while True:
+        try:
+            time.sleep(300) # Har 5 minute me khud ko ping karega
+            requests.get(app_url)
+        except Exception:
+            pass
+
+# ---------------------------
 # DECORATORS
 # ---------------------------
 def only_sudo(func):
@@ -354,10 +368,6 @@ async def addadmin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ {uid} added as sudo.")
 
 @only_owner
-async def deladmin(update: Update, context: ContextTypes.ContextTypes) if hasattr(ContextTypes, 'ContextTypes') else only_owner(lambda u, c: None): # Safe fallback
-    pass
-
-@only_owner
 async def deladmin_real(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message.reply_to_message:
         uid = update.message.reply_to_message.from_user.id
@@ -406,7 +416,7 @@ async def stopslay(update: Update, context: ContextTypes.DEFAULT_TYPE):
     slay_mode.pop(update.message.chat_id, None)
     await update.message.reply_text("🛑 Slay mode stopped.")
 
-# --- Auto Replies (Background async task for instant trigger) ---
+# --- Auto Replies ---
 async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message or not update.message.from_user:
         return
@@ -420,7 +430,7 @@ async def auto_replies(update: Update, context: ContextTypes.DEFAULT_TYPE):
         asyncio.create_task(update.message.reply_text(text))
 
 # ---------------------------
-# BUILD APP & RUN (High Performance Settings)
+# BUILD APP & RUN
 # ---------------------------
 def build_app(token):
     app = (
@@ -470,7 +480,6 @@ async def run_all_bots():
         try:
             await app.initialize()
             await app.start()
-            # drop_pending_updates=True से पुराने पेंडिंग मैसेज क्लियर हो जाते हैं जिससे बॉट तुरंत रेस्पॉन्स देता है
             await app.updater.start_polling(drop_pending_updates=True, allowed_updates=Update.ALL_TYPES)
         except Exception as e:
             print("Failed starting app:", e)
@@ -479,6 +488,11 @@ async def run_all_bots():
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
+    # Self-Ping Thread start kar diya taaki server sleep na ho
+    ping_thread = threading.Thread(target=self_ping)
+    ping_thread.daemon = True
+    ping_thread.start()
+
     flask_thread = threading.Thread(target=run_flask)
     flask_thread.daemon = True
     flask_thread.start()
