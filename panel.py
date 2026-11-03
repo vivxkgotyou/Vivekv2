@@ -249,7 +249,7 @@ def only_owner(func):
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         uid = update.effective_user.id
         if uid != OWNER_ID:
-            return await update.message.reply_text("❌ Only Rᴇʜᴀɴ can do this.")
+            return await update.message.reply_text("❌ Only Sᴀʜɪʟ can do this.")
         return await func(update, context)
     return wrapper
 
@@ -274,20 +274,48 @@ async def bot_loop(bot, chat_id, base, mode):
 # COMMANDS (Instant Response)
 # ---------------------------
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("welcome to the kazz slay bot⋆ 𝜗᭪!\nUse /assist to see all commands.")
+    await update.message.reply_text("welcome to the sahil slay bot⋆ 𝜗᭪!
+Use /assist to see all commands.")
 
 async def assist_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "Rᴇʜᴀɴ Sʟᴀʏ Bᴏᴛ Mᴇɴᴜ⋆ 𝜗᭪\n\n"
-        "ɢʀᴏᴜᴘ ʀᴇɴᴀᴍᴇ:\n"
-        "/gcnc <text>\n/ncemo <text>\n/pausegcnc\n/pauseall\n/delay <sec>\n/condition\n\n"
-        "ꜱʟᴀʏ:\n"
-        "/slayfire (reply)\n/slayend (reply)\n/slayspam (reply)\n/slayendspam (reply)\n\n"
-        "ꜱʟᴀʏ ᴍᴏᴅᴇ:\n"
-        "/slay <name>\n/stopslay\n\n"
-        "ᴀᴅᴍɪɴ ᴍᴏᴅᴇ:\n"
-        "/addadmin (reply)\n/deladmin (reply)\n/adminlist\n\n"
-        "ᴜꜱᴇʀꜱ:\n/myid\n/ping"
+        "Sᴀʜɪʟ Sʟᴀʏ Bᴏᴛ Mᴇɴᴜ⋆ 𝜗᭪
+
+"
+        "ɢʀᴏᴜᴘ ʀᴇɴᴀᴍᴇ:
+"
+        "/gcnc <text>
+/ncemo <text>
+/pausegcnc
+/pauseall
+/delay <sec>
+/condition
+
+"
+        "ꜱʟᴀʏ:
+"
+        "/slayfire (reply)
+/slayend (reply)
+/slayspam (reply)
+/slayendspam (reply)
+
+"
+        "ꜱʟᴀʏ ᴍᴏᴅᴇ:
+"
+        "/slay <name>
+/stopslay
+
+"
+        "ᴀᴅᴍɪɴ ᴍᴏᴅᴇ:
+"
+        "/addadmin (reply)
+/deladmin (reply)
+/adminlist
+
+"
+        "ᴜꜱᴇʀꜱ:
+/myid
+/ping"
     )
 
 async def ping_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -354,9 +382,11 @@ async def delay_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @only_sudo
 async def condition_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    msg = "📊 Active Loops:\n"
+    msg = "📊 Active Loops:
+"
     for chat_id, tasks in group_tasks.items():
-        msg += f"Chat {chat_id}: {len(tasks)} bots running\n"
+        msg += f"Chat {chat_id}: {len(tasks)} bots running
+"
     await update.message.reply_text(msg)
 
 # --- SUDO ---
@@ -377,7 +407,9 @@ async def deladmin_real(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @only_sudo
 async def adminlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("👑 SUDO USERS:\n" + "\n".join(map(str, SUDO_USERS)))
+    await update.message.reply_text("👑 SUDO USERS:
+" + "
+".join(map(str, SUDO_USERS)))
 
 # --- Slide / Spam / slay ---
 @only_sudo
@@ -484,7 +516,7 @@ async def run_all_bots():
         except Exception as e:
             print("Failed starting app:", e)
 
-    print("Rᴇʜᴀɴ ʙᴏᴛꜱ ᴀʀᴇ ʀᴇᴀᴅʏ ᴀɴᴅ ʀᴜɴɴɪɴɢ ⚡")
+    print("Sᴀʜɪʟ ʙᴏᴛꜱ ᴀʀᴇ ʀᴇᴀᴅʏ ᴀɴᴅ RUNNING ⚡")
     await asyncio.Event().wait()
 
 if __name__ == "__main__":
